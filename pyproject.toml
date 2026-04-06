@@ -1,0 +1,20 @@
+[project]
+name = "create-aimtool-file"
+version = "0.1.0"
+description = "An unofficial tool for creating aimooe tool files."
+authors = [
+    {name = "GGN_2015",email = "neko@jlulug.org"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "solve_rigid_point_set_rt_pro",
+    "solve_rigid_point_set_rt"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

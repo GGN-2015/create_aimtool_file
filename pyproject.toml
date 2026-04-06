@@ -1,6 +1,6 @@
 [project]
 name = "create-aimtool-file"
-version = "0.1.0"
+version = "0.1.1"
 description = "An unofficial tool for creating aimooe tool files."
 authors = [
     {name = "GGN_2015",email = "neko@jlulug.org"}
@@ -10,7 +10,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "numpy",
-    "solve_rigid_point_set_rt_pro",
     "solve_rigid_point_set_rt"
 ]
 

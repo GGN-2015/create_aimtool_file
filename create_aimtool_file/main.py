@@ -1,5 +1,5 @@
-from solve_rigid_point_set_rt_pro import compute_best_rigid_transform_pro
-from solve_rigid_point_set_rt     import apply_transform
+from solve_rigid_point_set_rt import compute_best_rigid_transform
+from solve_rigid_point_set_rt import apply_transform
 import numpy as np
 import os
 
@@ -32,7 +32,10 @@ def unit(vec:np.ndarray):
     return vec / np.linalg.norm(vec)
 
 # Compute tool file data
-def calculate_tool_file_data(node_set:np.ndarray, dtype=np.float32):
+def calculate_tool_file_data(node_set:np.ndarray, dtype=np.float32, iter_time:int=2):
+    if iter_time <= 0:
+        return node_set
+    
     if len(node_set.shape) != 2: # Must be a 2D array
         raise ValueError()
     if node_set.shape[1] != 3: # Must be 3D points
@@ -61,30 +64,32 @@ def calculate_tool_file_data(node_set:np.ndarray, dtype=np.float32):
     # Compute current X, Y, Z axes
     x_axis = unit(np_move[0])
     y_axis = unit(np_move[1])
-    z_axis = cross_3d(x_axis, y_axis).astype(dtype)
-    y_axis = cross_3d(z_axis, x_axis).astype(dtype)
-    x_axis = cross_3d(y_axis, z_axis).astype(dtype)
+    z_axis = unit(cross_3d(x_axis, y_axis).astype(dtype))
+    y_axis = unit(cross_3d(z_axis, x_axis).astype(dtype))
+    x_axis = unit(cross_3d(y_axis, z_axis).astype(dtype))
 
     # Construct a transformation
     P = np.array([
         x_axis,
         y_axis,
-        z_axis
+        z_axis,
+        np_move.mean(axis=0)
     ]).astype(dtype)
 
     # Target coordinate system
     Q = np.array([
         [1, 0, 0],
         [0, 1, 0],
-        [0, 0, 1]
+        [0, 0, 1],
+        [0, 0, 0]
     ]).astype(dtype)
 
     # Compute rotation matrix
-    rotmat, travec = compute_best_rigid_transform_pro(P, Q)
+    rotmat, travec = compute_best_rigid_transform(P, Q)
 
     # Get coordinate representation in the tool file
     aim_exp = apply_transform(np_move, rotmat, travec).astype(dtype)
-    return aim_exp - aim_exp.mean(axis=0)
+    return aim_exp
 
 # Create tool file
 def create_aimtool_file(aim_dir:str, tool_name:str, node_set:np.ndarray):

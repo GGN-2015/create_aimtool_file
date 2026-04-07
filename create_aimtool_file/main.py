@@ -76,19 +76,11 @@ def calculate_tool_file_data(node_set:np.ndarray, dtype=np.float32, according_to
     x_axis = unit(np_move[0])
     y_axis = unit(np_move[1])
 
-    if not according_to_manual:
-        # Test the direction of z
-        z_test_axis = unit(cross_3d(x_axis, y_axis).astype(dtype))
-        z_axis = fit_3d_plane(np_move)[0]
-        if np.dot(z_axis, z_test_axis) < 0:
-            z_axis = -z_axis
-        z_axis = unit(z_axis)
-
-    else:
-        z_axis = fit_3d_plane(np_move)[0]
-        if np.dot(raw_centroid, z_axis) > 0: # Make z_axis inner
-            z_axis = -z_axis
-        z_axis = unit(z_axis)
+    # Make z_axis
+    z_axis = fit_3d_plane(np_move)[0]
+    if np.dot(raw_centroid, z_axis) > 0: # Make z_axis inner
+        z_axis = -z_axis
+    z_axis = unit(z_axis)
 
     # Caculate real_y, recalculate X
     y_axis = unit(cross_3d(z_axis, x_axis).astype(dtype))
@@ -151,4 +143,4 @@ if __name__ == "__main__":
     ])
 
     # Create tool file
-    create_aimtool_file(".", "BONE-1", P, True)
+    create_aimtool_file(".", "BONE-1", P, False)

@@ -1,6 +1,6 @@
 [project]
 name = "create-aimtool-file"
-version = "0.1.1"
+version = "0.1.2"
 description = "An unofficial tool for creating aimooe tool files."
 authors = [
     {name = "GGN_2015",email = "neko@jlulug.org"}
